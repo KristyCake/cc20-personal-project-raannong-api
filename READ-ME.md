@@ -92,7 +92,7 @@ Product ── 1:N ──> Promotion
 | GET    | /api/pet/:id | ADMIN | ดูสัตว์เลี้ยงเฉพาะตัว (by ID) | id                                                      | { pet: {} }               |
 | GET    | /api/my-pets | USER  | ดูเฉพาะสัตว์เลี้ยงของตัวเอง   | -                                                       | { myPets: [] }            |
 | POST   | /api/pets    | USER  | เพิ่มสัตว์เลี้ยงใหม่           | { name, species, breed, birth_date, gender, image_url } | { msg: "create success" } |
-| PUT    | /api/pet/:id | USER  | แก้ไขสัตว์เลี้ยงของตัวเอง     | { updated fields }                                      | { msg: "update success" } |
+| PATCH  | /api/pet/:id | USER  | แก้ไขสัตว์เลี้ยงของตัวเอง     | { updated fields }                                      | { msg: "update success" } |
 | DELETE | /api/pet/:id | USER  | ลบสัตว์เลี้ยงของตัวเอง       | id                                                      | { msg: "delete success" } |
 
 ---
