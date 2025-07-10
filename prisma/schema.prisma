@@ -19,7 +19,7 @@ model User {
   email     String?  @unique
   mobile    String?  @unique
   password  String
-  name      String
+  name      String?
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,20 +51,25 @@ model Pet {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   name        String
-  description String
+  description String?
   price       Float
   stock       Int
-  imageUrl    String
-  category    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  imageUrl    String?
+  category    PetCategory? @default(CAT)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   orderItems OrderItem[]
   cartItems  CartItem[]
   reviews    Review[]
   promotions Promotion[]
+}
+
+enum PetCategory {
+  CAT
+  DOG
 }
 
 model Cart {
