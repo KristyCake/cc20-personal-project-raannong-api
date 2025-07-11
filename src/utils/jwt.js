@@ -1,10 +1,20 @@
 import jwt from "jsonwebtoken"
 
+// export function verifyToken(token) {
+//   const payload = jwt.verify(token, process.env.JWT_SECRET, {
+//     algorithms: ["HS256"]
+//   });
+//   return payload
+// }
 export function verifyToken(token) {
-  const payload = jwt.verify(token, process.env.JWT_SECRET, {
-    algorithms: ["HS256"]
-  });
-  return payload
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET, {
+      algorithms: ["HS256"]
+    });
+    return payload;
+  } catch (err) {
+    return null; // ทำให้ middleware ส่ง 401 ได้
+  }
 }
 
 export function signToken(payload) {
