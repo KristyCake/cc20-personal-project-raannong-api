@@ -1,19 +1,17 @@
 import jwt from "jsonwebtoken"
+import createError from "./create.error.js";
 
-// export function verifyToken(token) {
-//   const payload = jwt.verify(token, process.env.JWT_SECRET, {
-//     algorithms: ["HS256"]
-//   });
-//   return payload
-// }
 export function verifyToken(token) {
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET, {
       algorithms: ["HS256"]
     });
+    console.log("JWT_SECRET at verify:", process.env.JWT_SECRET);
+    console.log("Decoded payload:", payload);
+
     return payload;
   } catch (err) {
-    return null; // ทำให้ middleware ส่ง 401 ได้
+    return null;
   }
 }
 
@@ -23,6 +21,7 @@ export function signToken(payload) {
     expiresIn: "15d"
 
   });
+  console.log("JWT_SECRET at sign:", process.env.JWT_SECRET);
   return token
 }
 
@@ -36,8 +35,12 @@ export function signResetToken(userId) {
 }
 
 export function verifyResetToken(token) {
-  const payload = jwt.verify(token, process.env.RESET_SECRET, {
-    algorithms: ["HS256"]
-  });
-  return payload;
+  try {
+    const payload = jwt.verify(token, process.env.RESET_SECRET, {
+      algorithms: ["HS256"]
+    });
+    return payload.userId;
+  } catch (err) {
+    throw createError(400, "Invalid or expired reset token");
+  }
 }

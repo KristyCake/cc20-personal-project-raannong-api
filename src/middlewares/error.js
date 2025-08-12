@@ -1,8 +1,6 @@
-const error = (err, req, res, next) => {
-  console.log(err.message)
-  res
-    .status(err.code || 500)
-    .json({ error: err.message || "server error" })
+export function handleError(err, req, res, next) {
+  console.error(err);
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(statusCode).json({ error: message });
 }
-
-export default error

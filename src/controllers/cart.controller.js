@@ -14,6 +14,7 @@ export async function cart(req, res) {
 
 export async function createCart(req, res) {
   try {
+    console.log("🔒 req.user =", req.user);
     const userId = req.user.id;
     const { product_id, quantity } = req.body;
 
@@ -43,13 +44,16 @@ export async function patchCartItem(req, res) {
   }
 }
 
-export async function removeCartItem(req, res) {
+export async function removeCartItem(req, res, next) {
   try {
     const cartItemId = +req.params.id;
-    await deleteCartItem(cartItemId);
+    const userCartId = req.user.cartId; // 👈 อย่าลืมให้ JWT Middleware เพิ่ม user ลงใน req ด้วยนะ
+
+    await deleteCartItem(cartItemId, userCartId);
     res.json({ msg: "delete success" });
+    next()
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: "Something went wrong" });
+    res.status(err.status || 500).json({ msg: err.message || "Something went wrong" });
   }
 }

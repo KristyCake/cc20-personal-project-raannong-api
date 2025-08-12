@@ -8,8 +8,8 @@ export function authMiddleware(req, res, next) {
     return next(createError(401, "Missing Authorization Header"));
   }
 
-  const token = authHeader.split(" ")[1];
   try {
+    const token = authHeader.split(" ")[1];
     const payload = verifyToken(token); // อาจโยน error ได้
     if (!payload?.id || !payload?.role) {
       return next(createError(401, "Invalid Payload in Token"));

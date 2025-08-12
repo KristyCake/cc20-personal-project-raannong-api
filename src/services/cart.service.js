@@ -1,18 +1,33 @@
 import prisma from "../config/prisma.js";
+import createError from "../utils/create.error.js";
 
 
-export async function getCart(id) {
-  const cart = await prisma.cart.findUnique({
-    where: { userId: id }, include: { items: true },
-    omit: { createdAt: true, updatedAt: true }
-  });
-  return cart
-}
-
-// เพิ่มสินค้าแบบ merge quantity
-export async function addCartItem(userId, productId, quantity) {
+export async function getCart(userId) {
   const cart = await prisma.cart.findUnique({
     where: { userId },
+    include: {
+      items: {
+        include: {
+          product: {
+            select: {
+              name: true,
+              price: true,
+              imageUrl: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return cart;
+}
+
+
+
+export async function addCartItem(userId, productId, quantity) {
+  const cart = await prisma.cart.findFirst({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
     include: { items: true }
   });
 
@@ -59,16 +74,24 @@ export async function updateCartItem(cartItemId, quantity) {
   const updated = await prisma.cartItem.update({
     where: { id: cartItemId },
     data: {
-      quantity: existingItem.quantity + quantity,
+      quantity: quantity,
     },
   });
   return updated;
 }
 
 
-export async function deleteCartItem(cartItemId) {
-  const deleteItem = await prisma.cartItem.delete({
-    where: { id: cartItemId }
+export async function deleteCartItem(cartItemId, userCartId) {
+  const deleted = await prisma.cartItem.deleteMany({
+    where: {
+      id: cartItemId,
+      cartId: userCartId,
+    },
   });
-  return deleteItem
+
+  if (deleted.count === 0) {
+    throw createError(404, "Cart item not found");
+  }
+
+  return deleted;
 }

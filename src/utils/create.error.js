@@ -1,7 +1,5 @@
-const createError = (code, msg) => {
-  const error = new Error(msg);
-  error.code = code;
-  throw error;
+export default function createError(statusCode, message) {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
 }
-
-export default createError
